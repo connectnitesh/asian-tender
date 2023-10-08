@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+    --orangeglow: #f29235;
+  }
+}
+
+.white-box{
+  box-shadow: 1px 4px 15px -5px rgba(0, 0, 0, 0.1), 
+  2px 2px 2px -5px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+}
+
+.blue-box{
+  box-shadow: 1px 4px 15px -5px #ff8800, 
+  2px 2px 15px -5px #ffffff;
+background: #0d0d14;
+
+}
+
+.fade-box{
+  box-shadow: 1px 4px 10px -1px #626161, 
+  2px 2px 10px -5px #6b6b6b;
+background: #121212;
+
+}
+
+.orange-box{
+  color:#fff;
+  background: #F97316;
+  box-shadow:0 4px 15px -5px #d46213,
+  0 2px 2px -5px #ff8419;
+}
