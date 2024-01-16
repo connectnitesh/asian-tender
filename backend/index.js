@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const tenderRoutes = require('./routes/tender')
+const tenderRoutes = require('./src/routes/tender')
 const cors = require('cors')
 
 //express app

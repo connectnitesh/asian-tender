@@ -23,8 +23,6 @@ Node.js: The backend is powered by Node.js, a robust and scalable JavaScript run
 Express.js: Asian Tender leverages Express.js, a minimalist and flexible Node.js web application framework.
 MongoDB: As the database of choice, MongoDB is employed to store and retrieve tender information.
 
-* []()
-* []()
 
 ## Getting Started
 
@@ -64,7 +62,7 @@ Install the frontend project dependencies using npm:
 ```
      npm run dev
 ```
-         The frontend will be accessible at http://localhost:3000.
+The frontend will be accessible at http://localhost:3000.
 
 5. Open a new terminal window:
 While keeping the frontend server running, open a new terminal window.
