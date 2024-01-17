@@ -1,42 +1,34 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const tenderRoutes = require('./src/routes/tender')
+const tenderRoutes = require('./src/routes/routes')
 const cors = require('cors')
-
-//express app
 const app = express();
+const mongoose = require("mongoose");
 
-//cors enable
-app.use(cors());
 
 dotenv.config();
-
-//middleware to parse json content
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended: false,}));
 
-//middleware to parse body from url
-app.use(
-  express.urlencoded({
-    extended: false,
-  })
-);
-
-//connect to db
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("Connected to Database Successfully");
-  })
-  .catch((e) => {
-    console.log("Error: ", e);
-  });
+  } catch (error) {
+    console.error("Error connecting to the database:", error.message);
+    process.exit(1);
+  }
+};
 
-//tender routes
+connectDB();
+
 app.use('/api', tenderRoutes);
 
 const PORT = process.env.PORT;
-
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
