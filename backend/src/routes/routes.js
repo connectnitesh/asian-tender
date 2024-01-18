@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const { loginValidator } = require('../utility/validator');
+const { loginValidator,signupValidator } = require('../utility/reqValidator');
 
 //auth-routes
 router.post('/login', loginValidator, authController.login);
-router.post('/signup', authController.signup);
+router.post('/signup', signupValidator, authController.signup);
 router.post('/passwordReset', authController.passwordReset);
 
 //tenders-routes
