@@ -10,7 +10,7 @@ router.post('/login', authController.login);
 router.post('/signup', authController.signup);
 
 //tenders-routes
-router.post('/search', tenderController.search)
+router.get('/search', tenderController.search)
 router.post('/filter', tenderController.filterSearch)
 router.post('/tender-details', tenderController.tenderDetails)
 

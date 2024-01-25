@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Navbar from '@/components/mainComponents/Navbar'
 import Footer from '@/components/mainComponents/Footer'
+import { TenderProvider } from '@/components/TenderContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,6 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
+    <TenderProvider>
     <html lang="en">
       <body className={inter.className}>      
       <Navbar />
@@ -24,5 +26,6 @@ export default function RootLayout({
       <Footer />
       </body>
     </html>
+    </TenderProvider>
   )
 }
