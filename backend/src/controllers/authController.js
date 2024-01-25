@@ -1,27 +1,23 @@
 const authService = require('../services/authService');
-const {validationResult} = require('express-validator');
 
 const login = async(req, res) => {
-    const errors = validationResult(req)
-    if (errors.isEmpty()) {
-        const resData = await authService.login(req,res);
-        return res.status(resData.status).json(resData.data)
-    }
-    res.status(422).json({errors: errors.array()})
+        try{
+            const _resp = await authService.login(req,res);
+            return res.status(200).send({ status: "SUCCESS", data: _resp });
+        }
+        catch(error){
+            return res.status(error?.status || 500).send({status: "FAILED", data: {error: error?.message || error}})
+        }
 };
 
 const signup = async(req, res) => {
-    const errors = validationResult(req)
-    if (errors.isEmpty()) {
-        const resData = await authService.signup(req,res);
-        return res.status(resData.status).json(resData.data)
-    }
-    res.status(422).json({errors: errors.array()})
+        try{
+            const _resp = await authService.signup(req,res);
+            return res.status(200).send({ status: "SUCCESS", data: _resp });
+        }
+        catch(error){
+            return res.status(error?.status || 500).send({status: "FAILED", data: {error: error?.message || error}})
+        }
 };
 
-const passwordReset = (req, res) => {
-    // Implement password reset logic using authService
-    res.send('Password reset functionality');
-};
-
-module.exports = { login, signup, passwordReset };
+module.exports = { login, signup };
