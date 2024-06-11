@@ -5,6 +5,8 @@ import getLatestId from '../utility/helper';
 import path from 'path';
 import { categoryData, stateData } from '../config';
 import User from '../models/User';
+import {decrypt} from '../utility/crypto'
+
 
 export const CreateTender = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -299,33 +301,35 @@ export const DownloadTenderDocument = async (req: AuthenticatedRequest, res: Res
         const tender = await Tender.findOne({ tID: parseInt(tenderId, 10) });
 
         if (!tender) {
-            return res.status(404).json({ message: 'Tender not found' });
+            return res.status(404).json({status: "failure", message: 'Tender not found' });
         }
 
         const userId = parseInt(req.user.userId, 10);
 
         const dbUser = await User.findOne({ userId: userId });
-        console.log(userId);
-        console.log(dbUser);
 
         if (!dbUser) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({status: "failure", message: 'User not found' });
         }
 
         if (!dbUser.subscribedStatus || new Date(dbUser.subscriptionExpiryDate) < new Date()) {
-            return res.status(403).json({ message: 'Not authorized: Subscription expired or not subscribed' });
+            return res.status(403).json({status: "failure", message: 'Not authorized: Subscription expired or not subscribed' });
         }
 
         const documentPath = tender.document;
 
         if (!documentPath) {
-            return res.status(404).json({ message: 'Document not found for this tender' });
+            return res.status(404).json({status: "failure", message: 'Document not found for this tender' });
         }
 
-        const absolutePath = path.resolve(documentPath);
+            
+        const decryptTenderDoc = decrypt(documentPath);
+        const absolutePath = path.resolve(decryptTenderDoc);
+            
+  
 
         if (!fs.existsSync(absolutePath)) {
-            return res.status(404).json({ message: 'Document file not found' });
+            return res.status(404).json({status: "failure", message: 'Document file not found' });
         }
 
         res.download(absolutePath, (err) => {

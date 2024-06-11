@@ -94,6 +94,28 @@ export const getUserProfile = async (authorization) => {
   }
 };
 
+
+export const downloadTenderDoc = async (tID, authorization) => {
+  try {
+    const response = await api.post(
+      `/tender/download-tender/${tID}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${authorization}`
+        },
+        responseType: 'blob' 
+      }
+    );
+
+    return response.data;
+
+
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const AdminSignup = async (email, password, secret) => {
   try {
     const response = await api.post('/auth/admin/signup', { email, password, secret });

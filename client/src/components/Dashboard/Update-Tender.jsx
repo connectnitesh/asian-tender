@@ -125,7 +125,8 @@ const UpdateTender = () => {
                 alert(response.message);
             }
         } catch (error) {
-            console.error('Error creating tender:', error);
+            alert("Error updating tender")
+            console.error('Error updating tender:', error);
         }finally {
             setTenderData({
                 tID: '',

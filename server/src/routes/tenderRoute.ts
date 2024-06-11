@@ -19,7 +19,7 @@ router.get('/', GetAllTenders);
 router.get('/:tID', GetTenderById);
 router.get('/filters/query', FilterTenders);
 router.get('/search/query', GlobalTenderSearch);
-router.get('/download-tender/:tID',verifyTokenUser, DownloadTenderDocument);
+router.post('/download-tender/:tID',verifyTokenUser, DownloadTenderDocument);
 router.post('/subscribe', subscribeUser);
 router.post('/subscribe/updateStatus', updateSubscriptionDetails);
 
