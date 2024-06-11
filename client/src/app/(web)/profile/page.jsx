@@ -1,18 +1,13 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb-left';
 import { useAuth } from "@/context/authContext";
-
 import Link from 'next/link';
+import  withAuth from '@/components/Auth/withAuth'
 
 const Profile = () => {
-  const { user,logout } = useAuth();
-  const router = useRouter();
-
-  if(!user)
-    router.push('/login');
+  const { user, logout } = useAuth();
 
   return (
     <section className="bg-gray-100">
@@ -30,7 +25,7 @@ const Profile = () => {
                 style={{ width: '150px' }}
               />
               <div className="flex justify-center">
-                <p className="text-gray-500 mb-1">{user ? user.name : '' }</p>
+                <p className="text-gray-500 mb-1">{user ? user.name : ''}</p>
               </div>
               <div className="flex justify-center">
                 <p className="text-gray-500 mb-4">{user ? user.company : ''}</p>
@@ -39,7 +34,8 @@ const Profile = () => {
                 {user && user.subscribed ? (
                   <button className="bg-green-500 text-white w-40 py-2 px-4 rounded mr-2">Subscribed</button>
                 ) : (
-                  <Link href="/subscribe"className="bg-rose-700 w-40 text-white py-2 px-4 rounded mr-2">Subscribe Now
+                  <Link href="/subscribe" className="bg-rose-700 w-40 text-white py-2 px-4 rounded mr-2">
+                    Subscribe Now
                   </Link>
                 )}
               </div>
@@ -82,4 +78,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default withAuth(Profile);

@@ -1,16 +1,21 @@
-import { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useRef } from 'react';
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import withAdminAuth from "@/components/Auth/withAdminAuth";
+import { asyncCreateTender } from '@/api/api';
+import cookie from 'js-cookie'
 
 const CreateTender = () => {
-    const [formData, setFormData] = useState({
+    const [tenderData, setTenderData] = useState({
         title: '',
         state: '',
         category: '',
         value: '',
         closeDate: '',
-        tendDoc: null,
+        tenderDoc: null,
     });
+    const fileInputRef = useRef(null);
+
+    const authorization = cookie.get('asiantoken_adn_');
 
     const stateOptions = {
         "ANC": "Andaman and Nicobar Islands",
@@ -86,35 +91,53 @@ const CreateTender = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value }));
+        setTenderData((prevData) => ({ ...prevData, [name]: value }));
     };
 
     const handleFileChange = (e) => {
-        setFormData({ ...formData, tendDoc: e.target.files[0] });
+        const file = e.target.files[0];
+        setTenderData({ ...tenderData, tenderDoc: file });
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = new FormData();
-        for (const key in formData) {
-            if (key === 'tendDoc') {
-                data.append('tendDoc', formData.tendDoc);
-            } else {
-                data.append(key, formData[key]);
-            }
+
+        const formData = new FormData();
+        formData.append('title', tenderData.title);
+        formData.append('state', tenderData.state);
+        formData.append('category', tenderData.category);
+        formData.append('value', tenderData.value);
+        formData.append('closeDate', tenderData.closeDate);
+        if (tenderData.tenderDoc) {
+            formData.append('tenderDoc', tenderData.tenderDoc);
         }
 
+
         try {
-            const response = await axios.post('/api/create-tender', data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            console.log(response.data);
-            // Handle success response
+            const response = await asyncCreateTender(formData, authorization);
+            if (response.status == "success") {
+                alert(response.message);
+
+
+            } else {
+                alert(response.message);
+            }
         } catch (error) {
             console.error('Error creating tender:', error);
-            // Handle error response
+        } finally {
+            setTenderData({
+                title: '',
+                state: '',
+                category: '',
+                value: '',
+                closeDate: '',
+                tenderDoc: null,
+            });
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = null;
+            }
         }
     };
 
@@ -137,10 +160,11 @@ const CreateTender = () => {
                                 <input
                                     type="text"
                                     name="title"
-                                    value={formData.title}
+                                    value={tenderData.title}
                                     onChange={handleChange}
                                     placeholder="Enter tender title"
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    required
                                 />
                             </div>
 
@@ -148,9 +172,10 @@ const CreateTender = () => {
                                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">State</label>
                                 <select
                                     name="state"
-                                    value={formData.state}
+                                    value={tenderData.state}
                                     onChange={handleChange}
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    required
                                 >
                                     <option value="">Select state...</option>
                                     {Object.entries(stateOptions).map(([key, value]) => (
@@ -163,9 +188,10 @@ const CreateTender = () => {
                                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">Category</label>
                                 <select
                                     name="category"
-                                    value={formData.category}
+                                    value={tenderData.category}
                                     onChange={handleChange}
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    required
                                 >
                                     <option value="">Select category...</option>
                                     {Object.entries(categoryOptions).map(([key, value]) => (
@@ -179,10 +205,11 @@ const CreateTender = () => {
                                 <input
                                     type="text"
                                     name="value"
-                                    value={formData.value}
+                                    value={tenderData.value}
                                     onChange={handleChange}
                                     placeholder="Enter value"
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    required
                                 />
                             </div>
 
@@ -191,22 +218,25 @@ const CreateTender = () => {
                                 <input
                                     type="date"
                                     name="closeDate"
-                                    value={formData.closeDate}
+                                    value={tenderData.closeDate}
                                     onChange={handleChange}
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    required
                                 />
                             </div>
 
                             <div>
-                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">Upload Tender Document (PDF only)</label>
+                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">Upload Tender Document (PDF only, max size 10 MB)</label>
                                 <input
                                     type="file"
-                                    name="tendDoc"
+                                    accept=".pdf"
+                                    name="tenderDoc"
                                     onChange={handleFileChange}
-                                    className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form -strokedark dark:file:bg-white/30 dark:file:text-white dark:focus"
+                                    className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    ref={fileInputRef}
+                                    required
                                 />
                             </div>
-
                             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                                 <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
                                     <h3 className="font-medium text-black dark:text-white">Submit</h3>
@@ -228,4 +258,4 @@ const CreateTender = () => {
     );
 };
 
-export default CreateTender;
+export default withAdminAuth(CreateTender);

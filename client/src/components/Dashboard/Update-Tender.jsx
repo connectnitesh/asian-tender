@@ -1,19 +1,25 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useState, useRef } from 'react';
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import withAdminAuth from "@/components/Auth/withAdminAuth";
+import { asyncUpdateTender } from '@/api/api';
+import cookie from 'js-cookie'
+
 
 const UpdateTender = () => {
-    const { id } = useParams();
-    const [tID, setTID] = useState(id); // Added state for tender ID
-    const [formData, setFormData] = useState({
+    const [tenderData, setTenderData] = useState({
+        tID: '',
         title: '',
         state: '',
         category: '',
         value: '',
         closeDate: '',
-        tendDoc: null,
+        tenderDoc: null,
     });
+
+    const authorization = cookie.get('asiantoken_adn_');
+
+    const fileInputRef = useRef(null);
+
 
     const stateOptions = {
         "ANC": "Andaman and Nicobar Islands",
@@ -87,59 +93,54 @@ const UpdateTender = () => {
         "TD": "Tubewell Drilling"
     };
 
-    useEffect(() => {
-        const fetchTenderData = async () => {
-            try {
-                const response = await axios.get(`/api/tenders/${tID}`); // Adjust the endpoint accordingly
-                const tenderData = response.data;
-
-                setFormData({
-                    ...formData,
-                    title: tenderData.title,
-                    state: tenderData.state,
-                    category: tenderData.category,
-                    value: tenderData.value,
-                    closeDate: tenderData.closeDate,
-                });
-            } catch (error) {
-                console.error('Error fetching tender data:', error);
-            }
-        };
-
-        fetchTenderData();
-    }, [tID]);
-
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value }));
+        setTenderData((prevData) => ({ ...prevData, [name]: value }));
     };
 
     const handleFileChange = (e) => {
-        setFormData({ ...formData, tendDoc: e.target.files[0] });
+        setTenderData({ ...tenderData, tenderDoc: e.target.files[0] });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = new FormData();
-        for (const key in formData) {
-            if (key === 'tendDoc') {
-                data.append('tendDoc', formData.tendDoc);
-            } else {
-                data.append(key, formData[key]);
-            }
+
+        const formData = new FormData();
+        formData.append('tID', tenderData.tID);
+        formData.append('title', tenderData.title);
+        formData.append('state', tenderData.state);
+        formData.append('category', tenderData.category);
+        formData.append('value', tenderData.value);
+        formData.append('closeDate', tenderData.closeDate);
+        if (tenderData.tenderDoc) {
+            formData.append('tenderDoc', tenderData.tenderDoc);
         }
 
         try {
-            const response = await axios.put(`/api/update-tender/${tID}`, data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            console.log(response.data);
-            // Handle success response
+            const response = await asyncUpdateTender(formData, authorization);
+            if(response.status == "success"){
+                alert(response.message);
+                
+            }else{
+                alert(response.message);
+            }
         } catch (error) {
-            console.error('Error updating tender:', error);
-            // Handle error response
+            console.error('Error creating tender:', error);
+        }finally {
+            setTenderData({
+                tID: '',
+                title: '',
+                state: '',
+                category: '',
+                value: '',
+                closeDate: '',
+                tenderDoc: null,
+            });
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = null;
+            }
+
         }
     };
 
@@ -164,8 +165,9 @@ const UpdateTender = () => {
                                 <input
                                     type="text"
                                     name="tID"
-                                    value={formData.tID}
+                                    value={tenderData.tID}
                                     onChange={handleChange}
+                                    required
                                     placeholder="Enter Tender ID"
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -175,8 +177,9 @@ const UpdateTender = () => {
                                 <input
                                     type="text"
                                     name="title"
-                                    value={formData.title}
+                                    value={tenderData.title}
                                     onChange={handleChange}
+                                    required
                                     placeholder="Enter tender title"
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -186,8 +189,9 @@ const UpdateTender = () => {
                                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">State</label>
                                 <select
                                     name="state"
-                                    value={formData.state}
+                                    value={tenderData.state}
                                     onChange={handleChange}
+                                    required
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active                                    :cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 >
                                     <option value="">Select state...</option>
@@ -201,8 +205,9 @@ const UpdateTender = () => {
                                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">Category</label>
                                 <select
                                     name="category"
-                                    value={formData.category}
+                                    value={tenderData.category}
                                     onChange={handleChange}
+                                    required
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 >
                                     <option value="">Select category...</option>
@@ -217,9 +222,10 @@ const UpdateTender = () => {
                                 <input
                                     type="text"
                                     name="value"
-                                    value={formData.value}
+                                    value={tenderData.value}
                                     onChange={handleChange}
                                     placeholder="Enter value"
+                                    required
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>
@@ -229,18 +235,22 @@ const UpdateTender = () => {
                                 <input
                                     type="date"
                                     name="closeDate"
-                                    value={formData.closeDate}
+                                    value={tenderData.closeDate}
                                     onChange={handleChange}
+                                    required
                                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>
 
                             <div>
-                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">Upload Tender Document (PDF only)</label>
+                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">Upload Tender Document (PDF only, max size 10 MB)</label>
                                 <input
                                     type="file"
-                                    name="tendDoc"
+                                    accept=".pdf"
+                                    name="tenderDoc"
                                     onChange={handleFileChange}
+                                    ref={fileInputRef}
+                                    required
                                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus"
                                 />
                             </div>
@@ -267,5 +277,5 @@ const UpdateTender = () => {
     );
 };
 
-export default UpdateTender;
+export default withAdminAuth(UpdateTender);
 

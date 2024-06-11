@@ -5,29 +5,31 @@ import { useRouter } from 'next/navigation'
 import Link from "next/link";
 import Image from "next/image";
 import DarkModeSwitcher from "../../components/Header/DarkModeSwitcher";
-import cookie from 'js-cookie';
-import { AdminLogin, getAsianAdmin } from "@/api/api";
+import { AdminLogin } from "@/api/api";
 import { useAdminAuth } from "@/context/authadminContext";
 
 
 
 
-const SignIn: React.FC = () => {
+const SignIn = () => {
   const router = useRouter();
   const { admin, login } = useAdminAuth();
-  console.log(admin);
 
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
 
-if (admin) {
-        router.push('/admin_panel/dashboard');
-      } else {
-        router.push('/admin_panel');
-      }
-    
+  const fetchAdminProfile = async () => {
+    if (admin) {
+      router.push('/admin_panel/dashboard');
+    }
+  };
+
+  useEffect(() => {
+    fetchAdminProfile();
+  }, [admin]);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -42,21 +44,24 @@ if (admin) {
       if (email && password) {
         const response = await AdminLogin(email, password);
 
-        if (response.status == "success") {
-          login(response.asiantoken_adn_);
+        if (response.status === "success") {
+          await login(response.asiantoken_adn_);
+        } else {
+          alert(response.message);
         }
       } else {
         alert("Please provide email and password");
       }
-    } catch (error: any) {
+    } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
         alert(error.response.data.message);
       } else {
-        alert('An error occurred during Login. Please try again.');
+        alert('An error occurred during login. Please try again.');
       }
-      console.error('An error occurred during signup:', error);
+      console.error('An error occurred during login:', error);
     }
   };
+
 
   return (
 
