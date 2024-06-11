@@ -11,7 +11,6 @@ import getLatestId from '../utility/helper';
 export const AdminSignup = async (req: Request, res: Response, next: NextFunction) => {
 
   const { email, password, secret } = req.body;
-  console.log(req.body);
   try {
 
     if (secret !== ADMIN_SIGNUP_SECRET) {
@@ -102,14 +101,12 @@ export const CustomerLogin = async (req: Request, res: Response, next: NextFunct
   try {
     const { email, password } = req.body;
 
-    console.log(req.body);
 
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ status: "failure", message: 'Invalid email' });
     }
 
-    console.log(user);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ status: "failure", message: 'Invalid password' });

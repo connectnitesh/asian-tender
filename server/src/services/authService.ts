@@ -14,7 +14,7 @@ const verifyToken = (req: AuthenticatedRequestAdmin, res: Response, next: NextFu
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized: Access token required' });
+    return res.status(401).json({status: "failure", message: 'Unauthorized: Access token required' });
   }
 
   const token = authHeader.split(' ')[1];
@@ -22,13 +22,13 @@ const verifyToken = (req: AuthenticatedRequestAdmin, res: Response, next: NextFu
   try {
     const decoded = jwt.verify(token, APP_SECRET);
     if (decoded.adminId < 1000 && decoded.adminId > 1002) {
-      return res.status(403).json({ message: 'Forbidden: Admin access required' });
+      return res.status(403).json({status: "failure", message: 'Forbidden: Admin access required' });
       }
       req.adminId = decoded.adminId;
       
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+    return res.status(401).json({status: "failure", message: 'Unauthorized: Invalid token' });
   }
 };
 

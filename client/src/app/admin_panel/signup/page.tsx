@@ -1,22 +1,21 @@
 "use client"
 
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import DarkModeSwitcher from "../../../components/Header/DarkModeSwitcher";
 import { useRouter } from "next/navigation";
-import cookie from 'js-cookie'
-import { AdminSignup, getAsianAdmin } from "@/api/api";
+import { AdminSignup } from "@/api/api";
 import { useAdminAuth } from "@/context/authadminContext";
 
 
-const SignUp: React.FC = () => {
+const SignUp = () => {
 
+  const router = useRouter();
   const { admin } = useAdminAuth();
 
 
-  const router = useRouter();
-  const [asinAdmin, setAsianAdmin] = useState({
+  const [asianAdmin, setAsianAdmin] = useState({
     email: "",
     password: "",
     secret: ""
@@ -24,18 +23,18 @@ const SignUp: React.FC = () => {
 
 
   const fetchAdminProfile = async () => {
-      try {
-        if(admin)
-          router.push('/admin_panel/dashboard');
-      } catch (error) {
-        console.error("Failed to fetch admin profile:", error);
-      }
+    try {
+      if (admin)
+        router.push('/admin_panel/dashboard');
+    } catch (error) {
+      console.error("Failed to fetch admin profile:", error);
+    }
   };
 
 
   useEffect(() => {
     fetchAdminProfile();
-  }, []);
+  }, [admin]);
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -49,7 +48,7 @@ const SignUp: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await AdminSignup(asianAdmin.email, asinAdmin.password, asianAdmin.secret);
+      const response = await AdminSignup(asianAdmin.email, asianAdmin.password, asianAdmin.secret);
       if (response.status == "success") {
         alert(response.message)
         router.push('/admin_panel');
@@ -98,7 +97,7 @@ const SignUp: React.FC = () => {
               />
             </Link>
             <p className="2xl:px-20">
-            Asian Tender Connecting Opportunities, Empowering Growth.
+              Asian Tender Connecting Opportunities, Empowering Growth.
             </p>
 
             <span className="mt-15 inline-block">
@@ -240,7 +239,7 @@ const SignUp: React.FC = () => {
                 </label>
                 <div className="relative">
                   <input
-            name="email"
+                    name="email"
                     type="email"
                     placeholder="Enter your email"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -273,7 +272,7 @@ const SignUp: React.FC = () => {
                 </label>
                 <div className="relative">
                   <input
-                  name="password"
+                    name="password"
                     type="password"
                     placeholder="Enter your password"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -310,7 +309,7 @@ const SignUp: React.FC = () => {
                 </label>
                 <div className="relative">
                   <input
-                  name="secret"
+                    name="secret"
                     type="password"
                     placeholder="Enter Secret"
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"

@@ -1,26 +1,32 @@
 import { useState } from 'react';
-import axios from 'axios';
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import withAdminAuth from "@/components/Auth/withAdminAuth";
+import { asyncDeleteTender } from '@/api/api';
+import cookie from 'js-cookie'
 
 const DeleteTender = () => {
-    const [tenderId, setTenderId] = useState('');
+    const [tID, setTenderID] = useState('');
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const authorization = cookie.get('asiantoken_adn_');
+
 
     const handleChange = (e) => {
         const { value } = e.target;
-        setTenderId(value);
+        setTenderID(value);
     };
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`/api/delete-tender/${tenderId}`);
-            console.log(response.data);
-            // Handle success response
+            const response = await asyncDeleteTender(tID,authorization);
+            if (response.status == "success") {
+                alert(response.message);
+            } else {
+                alert(response.message);
+            }
         } catch (error) {
             console.error('Error deleting tender:', error);
-            // Handle error response
         } finally {
-            setTenderId('');
+            setTenderID('');
             setShowConfirmation(false);
         }
     };
@@ -41,44 +47,58 @@ const DeleteTender = () => {
                 <h2 className="text-2xl font-bold text-white">Delete Tender</h2>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-6 px-6">
-                <div className="rounded-md bg-white shadow-md p-6 dark:bg-gray-800">
-                    <div>
-                        <label htmlFor="tenderId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tender ID</label>
-                        <input
-                            id="tenderId"
-                            type="text"
-                            value={tenderId}
-                            onChange={handleChange}
-                            placeholder="Enter Tender ID"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
-                        />
-                    </div>
-                    <div className="mt-4">
-                        <button
-                            type="submit"
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-800 bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                        >
-                            Delete Tender
-                        </button>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-9 sm:grid-cols-2 mt-6 px-6">
+                <div className="flex flex-col gap-9">
+                    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                        <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
+                            <h3 className="font-medium text-black dark:text-white">Tender Details</h3>
+                        </div>
+                        <div className="flex flex-col gap-5.5 p-6.5">
+                            <div>
+                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">Tender ID</label>
+                                <input
+                                    type="text"
+                                    value={tID}
+                                    required
+                                    onChange={handleChange}
+                                    placeholder="Enter Tender ID"
+                                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                />
+                            </div>
+                            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                                <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
+                                    <h3 className="font-medium text-black dark:text-white">Submit</h3>
+                                </div>
+                                <div className="flex flex-col gap-5.5 p-6.5">
+                                    <button
+                                        type="submit"
+                                        className="rounded-lg bg-blue-600 px-5 py-3 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+                                    >
+                                        Delete Tender
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
 
             {showConfirmation && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white rounded-lg p-8 dark:bg-gray-800">
-                        <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-300">Confirm Deletion</h3>
-                        <p className="text-sm text-gray-700 dark:text-gray-400">Are you sure you want to delete this tender?</p>
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark p-8">
+                        <h3 className="text-lg font-semibold mb-4 text-black dark:text-white">Confirm Deletion</h3>
+                        <p className="text-sm text-black dark:text-white">Are you sure you want to delete this tender?</p>
                         <div className="mt-6 flex justify-end">
-                            <button onClick={handleCloseConfirmation} className="mr-4 bg-gray-200 px-4 py-2 rounded-md text-sm font-medium text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Cancel</button>
-                            <button onClick={handleDelete} className="bg-red-500 px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Delete</button>
+                            <button onClick={handleCloseConfirmation} className="mr-4 bg-slate-200 dark:bg-slate-700 px-4 py-2 rounded-md text-sm font-medium text-black dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-700">Cancel</button>
+                            <button onClick={handleDelete} className="bg-rose-600 dark:bg-rose-700 px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-red-700">Delete</button>
                         </div>
                     </div>
                 </div>
             )}
+
+
         </>
     );
 };
 
-export default DeleteTender;
+export default withAdminAuth(DeleteTender);

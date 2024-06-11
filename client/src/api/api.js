@@ -31,12 +31,10 @@ export const getTenderById = async (tID) => {
 
 export const filterTender = async (page, limit, selectedCategories, selectedStates, sortValue, iscloseDate) => {
   try {
-    console.log(page,limit,selectedCategories,selectedStates, sortValue)
     const categoryParam = selectedCategories.length > 0 ? `&category=${selectedCategories.join(',')}` : '';
     const stateParam = selectedStates.length > 0 ? `&state=${selectedStates.join(',')}` : '';
     const sortParam = `&value=${sortValue}`;
     const response = await api.get(`/tender/filters/query?${categoryParam}${stateParam}${sortParam}&limit=${limit}&page=${page}`);
-    console.log("response", response);
     return response.data;
   } catch (error) {
     throw error;
@@ -45,7 +43,7 @@ export const filterTender = async (page, limit, selectedCategories, selectedStat
 
 export const customerLogin = async (email, password) => {
   try {
-    const response = await api.post(`/auth/customer/login`,{ email, password });
+    const response = await api.post(`/auth/customer/login`, { email, password });
     return response.data;
 
   } catch (error) {
@@ -54,9 +52,9 @@ export const customerLogin = async (email, password) => {
 };
 
 
-export const customerSignup = async (name,email,contact,company,password) => {
+export const customerSignup = async (name, email, contact, company, password) => {
   try {
-    const response = await api.post(`/auth/customer/signup`,{ name,email,contact,company, password });
+    const response = await api.post(`/auth/customer/signup`, { name, email, contact, company, password });
     return response.data;
 
   } catch (error) {
@@ -65,7 +63,7 @@ export const customerSignup = async (name,email,contact,company,password) => {
 };
 
 
-export const searchTender = async (searchTerm,page,limit) => {
+export const searchTender = async (searchTerm, page, limit) => {
   try {
     const response = await api.get(`/tender/search/query?text=${searchTerm}&page=${page}&limit=${limit}`);
 
@@ -135,27 +133,50 @@ export const getAsianAdmin = async (authorization) => {
   }
 };
 
-export const CreateTender = async (title, state, category, value, closeDate, document) => {
+
+export const asyncCreateTender = async (formData, authorization) => {
   try {
-    const response = await api.post('/tender', { title, state, category, value, closeDate, document });
+
+    const response = await api.post('/tender/create-tender', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${authorization}`
+      }
+    });
+
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const UpdateTender = async (tID, title, state, category, value, closeDate, document) => {
+
+export const asyncUpdateTender = async (formData, authorization) => {
   try {
-    const response = await api.put(`/tender/${tID}`, { title, state, category, value, closeDate, document });
+    const tID = formData.get('tID');
+
+    const response = await api.post(`/tender/update-tender/${tID}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${authorization}`
+      }
+    });
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const DeleteTender = async (tID) => {
+export const asyncDeleteTender = async (tID, authorization) => {
   try {
-    const response = await api.delete(`/tender/${tID}`);
+    const response = await api.post(`/tender/delete-tender/${tID}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${authorization}`
+        }
+      }
+    );
     return response.data;
   } catch (error) {
     throw error;

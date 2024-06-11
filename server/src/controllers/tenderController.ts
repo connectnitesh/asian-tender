@@ -9,14 +9,12 @@ import User from '../models/User';
 export const CreateTender = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { title, state, category, value, closeDate } = req.body;
-        console.log(req.body);
 
-        console.log(stateData[state]);
         if (!state || !Object.keys(stateData).includes(state)) {
-            return res.status(400).json({ message: 'Invalid state provided' });
+            return res.status(400).json({status: "failure", message: 'Invalid state provided' });
         }
         if (!category || !Object.keys(categoryData).includes(category)) {
-            return res.status(400).json({ message: 'Invalid category provided' });
+            return res.status(400).json({status: "failure", message: 'Invalid category provided' });
         }
 
         let tID = await getLatestId(Tender, "tID");
@@ -26,7 +24,7 @@ export const CreateTender = async (req: Request, res: Response, next: NextFuncti
         const newTender = new Tender({ tID, title, state: stateData[state], state_code: state, category: categoryData[category], category_code: category, value, document: req.filePath, closeDate: closeDate });
         await newTender.save();
 
-        return res.status(201).json(newTender);
+        return res.status(201).json({status: "success", message: "Tender Upload Successfully!", tender: {tID: newTender.tID, title: newTender.title, state: newTender.state, category: newTender.category }});
     } catch (error) {
         next(error);
     }
@@ -41,7 +39,7 @@ export const UpdateTender = async (req: Request, res: Response, next: NextFuncti
         const existingTender = await Tender.findOne({ tID: parseInt(tID, 10) });
 
         if (!existingTender) {
-            return res.status(404).json({ message: 'Tender not found' });
+            return res.status(404).json({status: "failure", message: 'Tender not found' });
         }
 
         if (title) {
@@ -49,14 +47,14 @@ export const UpdateTender = async (req: Request, res: Response, next: NextFuncti
         }
         if (state) {
             if (!Object.keys(stateData).includes(state)) {
-                return res.status(400).json({ message: 'Invalid state provided' });
+                return res.status(400).json({status: "failure", message: 'Invalid state provided' });
             }
             existingTender.state = stateData[state];
             existingTender.state_code = state;
         }
         if (category) {
             if (!Object.keys(categoryData).includes(category)) {
-                return res.status(400).json({ message: 'Invalid category provided' });
+                return res.status(400).json({status: "failure", message: 'Invalid category provided' });
             }
             existingTender.category = categoryData[category];
             existingTender.category_code = category;
@@ -82,7 +80,7 @@ export const UpdateTender = async (req: Request, res: Response, next: NextFuncti
 
         await existingTender.save();
 
-        return res.json(existingTender);
+        return res.json({status: "success", message: `Tender with tID: ${existingTender.tID} updated Successfully`});
     } catch (error) {
         next(error);
     }
@@ -96,7 +94,7 @@ export const DeleteTender = async (req: Request, res: Response, next: NextFuncti
         const existingTender = await Tender.findOne({ tID: parseInt(tID, 10) });
 
         if (!existingTender) {
-            return res.status(404).json({ message: 'Tender not found' });
+            return res.status(404).json({status: "failure", message: 'Tender not found' });
         }
 
         const existingTenderDoc = existingTender.document;
@@ -110,7 +108,7 @@ export const DeleteTender = async (req: Request, res: Response, next: NextFuncti
 
         const deletedTender = await Tender.findByIdAndDelete(existingTender._id);
 
-        return res.json({ message: 'Tender deleted successfully', deletedTender });
+        return res.json({status:"success", message: `Tender tID: ${deletedTender.tID}: Title: ${deletedTender.title} deleted successfully`, });
     } catch (error) {
         next(error);
     }

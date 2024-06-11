@@ -1,16 +1,15 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb-left";
-import { customerSignup, getUserProfile } from "@/api/api";
+import { customerSignup } from "@/api/api";
 import { useAuth } from "@/context/authContext";
-
 
 const Signup = () => {
   const router = useRouter();
-  console.log(user);
+  const { user } = useAuth(); // Destructure useAuth to get user
 
   const [customer, setCustomer] = useState({
     name: "",
@@ -20,16 +19,15 @@ const Signup = () => {
     password: ""
   });
 
-
   const fetchUserProfile = async () => {
     try {
-      if(user)
+      if (user) {
         router.push('/profile');
+      }
     } catch (error) {
       console.error("Failed to fetch user profile:", error);
     }
   };
-
 
   useEffect(() => {
     fetchUserProfile();
@@ -48,9 +46,8 @@ const Signup = () => {
 
     try {
       const response = await customerSignup(customer.name, customer.email, customer.contact, customer.company, customer.password);
-      console.log(response);
-      if (response.status == "success") {
-        alert(response.message)
+      if (response.status === "success") {
+        alert(response.message);
         router.push('/login');
       } else {
         alert(response.message);
@@ -69,7 +66,7 @@ const Signup = () => {
     <div className="min-h-max p-4 bg-gray-100">
       <Breadcrumb pageName="Sign Up" />
       <div className="flex justify-center">
-        <form className="text-lg p-8 w-full max-w-lg bg-blue-600 text-white rounded-lg shadow-lg">
+        <form onSubmit={handleSubmit} className="text-lg p-8 w-full max-w-lg bg-blue-600 text-white rounded-lg shadow-lg">
           <h1 className="text-2xl font-bold text-center mb-4">
             Signup
           </h1>
@@ -80,6 +77,7 @@ const Signup = () => {
             name="name"
             className="border-2 border-gray-300 text-black rounded my-2 p-2 w-full"
             onChange={handleInput}
+            value={customer.name}
           />
           <br />
           <label htmlFor="email">Email</label>
@@ -89,6 +87,7 @@ const Signup = () => {
             name="email"
             className="border-2 border-gray-300 text-black rounded my-2 p-2 w-full"
             onChange={handleInput}
+            value={customer.email}
           />
           <br />
           <label htmlFor="contact">Contact</label>
@@ -98,6 +97,7 @@ const Signup = () => {
             name="contact"
             className="border-2 border-gray-300 text-black rounded my-2 p-2 w-full"
             onChange={handleInput}
+            value={customer.contact}
           />
           <br />
           <label htmlFor="company">Company</label>
@@ -107,6 +107,7 @@ const Signup = () => {
             name="company"
             className="border-2 border-gray-300 text-black rounded my-2 p-2 w-full"
             onChange={handleInput}
+            value={customer.company}
           />
           <br />
           <label htmlFor="password">Password</label>
@@ -116,9 +117,10 @@ const Signup = () => {
             name="password"
             className="border-2 border-gray-300 text-black rounded my-2 p-2 w-full"
             onChange={handleInput}
+            value={customer.password}
           />
           <br />
-          <button className="bg-green-600 py-1 px-4 rounded my-2" onClick={handleSubmit}>
+          <button className="bg-green-600 py-1 px-4 rounded my-2" type="submit">
             Signup
           </button>
           <p className="text-sm text-center mt-4">

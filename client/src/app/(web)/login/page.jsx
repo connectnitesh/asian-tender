@@ -1,16 +1,15 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb-left";
 import { customerLogin } from "@/api/api";
 import { useAuth } from "@/context/authContext";
 
-
 const Login = () => {
   const router = useRouter();
-  const { user,login } = useAuth();
+  const { user, login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -18,14 +17,10 @@ const Login = () => {
   });
 
   const fetchUserProfile = async () => {
-    try {
-      if(user)
-        router.push('/profile');
-    } catch (error) {
-      console.error("Failed to fetch user profile:", error);
+    if (user) {
+      router.push('/profile');
     }
   };
-
 
   useEffect(() => {
     fetchUserProfile();
@@ -40,26 +35,26 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const { email, password } = formData;
       if (email && password) {
-        
         const response = await customerLogin(email, password);
 
-        if (response.status == "success") {
-          login(response.asiantoken_);
+        if (response.status === "success") {
+          await login(response.asiantoken_);
+        } else {
+          alert(response.message);
         }
       } else {
-        alert(response.message);
+        alert("Please enter both email and password.");
       }
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
         alert(error.response.data.message);
       } else {
-        alert('An error occurred during Login. Please try again.');
+        alert('An error occurred during login. Please try again.');
       }
-      console.error('An error occurred during signup:', error);
+      console.error('An error occurred during login:', error);
     }
   };
 
