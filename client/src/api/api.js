@@ -104,7 +104,7 @@ export const downloadTenderDoc = async (tID, authorization) => {
         headers: {
           Authorization: `Bearer ${authorization}`
         },
-        responseType: 'blob' 
+        responseType: 'blob'
       }
     );
 
@@ -199,6 +199,43 @@ export const asyncDeleteTender = async (tID, authorization) => {
         }
       }
     );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const asyncCheckout = async (amount) => {
+  try {
+    const response = await api.post(`/subscribe/checkout`,
+      { amount });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getrazorPayKey = async (amount) => {
+  try {
+    const response = await api.get(`/subscribe/getapiKey`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const paymentVerify = async (data) => {
+  try {
+    const response = await api.post(`/subscribe/paymentVerification`, {data});
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const orderVerify = async (order_ref_no) => {
+  try {
+    const response = await api.post(`/subscribe/verifyorder`, {order_ref_no});
     return response.data;
   } catch (error) {
     throw error;

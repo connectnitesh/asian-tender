@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { razorPay_KEY_SECRET } from '../config';
 
 
 const algorithm = 'aes-256-cbc';
@@ -22,3 +23,19 @@ export function decrypt(text) {
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
 }
+
+export async function generatedSignature(razorpayOrderId, razorpayPaymentId) {
+    const keySecret = razorPay_KEY_SECRET;
+    const body = razorpayOrderId + "|" + razorpayPaymentId;
+    if (!keySecret) {
+        throw new Error(
+            'Razorpay key secret is not defined in environment variables.'
+        );
+    }
+    const sig = crypto
+        .createHmac('sha256', keySecret)
+        .update(body.toString())
+        .digest('hex');
+
+    return sig;
+};

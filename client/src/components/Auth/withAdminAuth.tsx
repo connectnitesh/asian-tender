@@ -4,7 +4,7 @@ import { useAdminAuth } from '@/context/authadminContext';
 
 const withAdminAuth = (WrappedComponent) => {
   return (props) => {
-    const { admin } = useAdminAuth();
+    const { admin } = useAdminAuth() as { admin: any};
     const router = useRouter();
 
     useEffect(() => {

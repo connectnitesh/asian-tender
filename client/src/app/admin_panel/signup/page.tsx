@@ -12,7 +12,7 @@ import { useAdminAuth } from "@/context/authadminContext";
 const SignUp = () => {
 
   const router = useRouter();
-  const { admin } = useAdminAuth();
+  const { admin } = useAdminAuth() as { admin: any} ;
 
 
   const [asianAdmin, setAsianAdmin] = useState({

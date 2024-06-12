@@ -1,6 +1,6 @@
 import express , { Application } from 'express';
 
-import { authRoute } from '../routes'
+import { authRoute, subscriptionRoute } from '../routes'
 import { tenderRoute } from '../routes'
  
 
@@ -12,6 +12,7 @@ export default async(app: Application) => {
     
     app.use('/auth', authRoute);
     app.use('/tender', tenderRoute);
+    app.use('/subscribe', subscriptionRoute);
 
     app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
         console.error(err.stack);
