@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Navbar from '@/components/mainComponents/Navbar'
 import Footer from '@/components/mainComponents/Footer'
 import '@/css/global.css'
+import Head from 'next/head';
 
 import { AuthProvider } from '@/context/authContext'
 
@@ -19,14 +20,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <AuthProvider >
-    <html lang="en">
-      <body className={inter.className}>      
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
-      </body>
-    </html>
+    <AuthProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <Head>
+            <title>Asian Tender</title>
+            <meta name="description" content="Asian Tender" />
+          </Head>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </body>
+      </html>
     </AuthProvider>
   )
 }

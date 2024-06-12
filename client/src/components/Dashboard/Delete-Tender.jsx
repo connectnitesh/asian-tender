@@ -24,6 +24,7 @@ const DeleteTender = () => {
                 alert(response.message);
             }
         } catch (error) {
+            alert("Error deleting tender!")
             console.error('Error deleting tender:', error);
         } finally {
             setTenderID('');

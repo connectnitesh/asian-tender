@@ -140,7 +140,7 @@ export const CustomerProfile = async (req: AuthenticatedRequest, res: Response, 
       email: dbUser.email,
       contact: dbUser.contact,
       company: dbUser.company,
-      subscribed: dbUser.subscribedStatus
+      subscribed: dbUser.subscribedStatus && new Date(dbUser.subscriptionExpiryDate) > new Date()
     };
 
 

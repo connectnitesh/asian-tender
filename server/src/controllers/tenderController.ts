@@ -5,16 +5,19 @@ import getLatestId from '../utility/helper';
 import path from 'path';
 import { categoryData, stateData } from '../config';
 import User from '../models/User';
+import { decrypt } from '../utility/crypto'
+import Razorpay from 'razorpay';
+
 
 export const CreateTender = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { title, state, category, value, closeDate } = req.body;
 
         if (!state || !Object.keys(stateData).includes(state)) {
-            return res.status(400).json({status: "failure", message: 'Invalid state provided' });
+            return res.status(400).json({ status: "failure", message: 'Invalid state provided' });
         }
         if (!category || !Object.keys(categoryData).includes(category)) {
-            return res.status(400).json({status: "failure", message: 'Invalid category provided' });
+            return res.status(400).json({ status: "failure", message: 'Invalid category provided' });
         }
 
         let tID = await getLatestId(Tender, "tID");
@@ -24,7 +27,7 @@ export const CreateTender = async (req: Request, res: Response, next: NextFuncti
         const newTender = new Tender({ tID, title, state: stateData[state], state_code: state, category: categoryData[category], category_code: category, value, document: req.filePath, closeDate: closeDate });
         await newTender.save();
 
-        return res.status(201).json({status: "success", message: "Tender Upload Successfully!", tender: {tID: newTender.tID, title: newTender.title, state: newTender.state, category: newTender.category }});
+        return res.status(201).json({ status: "success", message: "Tender Upload Successfully!", tender: { tID: newTender.tID, title: newTender.title, state: newTender.state, category: newTender.category } });
     } catch (error) {
         next(error);
     }
@@ -39,7 +42,7 @@ export const UpdateTender = async (req: Request, res: Response, next: NextFuncti
         const existingTender = await Tender.findOne({ tID: parseInt(tID, 10) });
 
         if (!existingTender) {
-            return res.status(404).json({status: "failure", message: 'Tender not found' });
+            return res.status(404).json({ status: "failure", message: 'Tender not found' });
         }
 
         if (title) {
@@ -47,14 +50,14 @@ export const UpdateTender = async (req: Request, res: Response, next: NextFuncti
         }
         if (state) {
             if (!Object.keys(stateData).includes(state)) {
-                return res.status(400).json({status: "failure", message: 'Invalid state provided' });
+                return res.status(400).json({ status: "failure", message: 'Invalid state provided' });
             }
             existingTender.state = stateData[state];
             existingTender.state_code = state;
         }
         if (category) {
             if (!Object.keys(categoryData).includes(category)) {
-                return res.status(400).json({status: "failure", message: 'Invalid category provided' });
+                return res.status(400).json({ status: "failure", message: 'Invalid category provided' });
             }
             existingTender.category = categoryData[category];
             existingTender.category_code = category;
@@ -80,7 +83,7 @@ export const UpdateTender = async (req: Request, res: Response, next: NextFuncti
 
         await existingTender.save();
 
-        return res.json({status: "success", message: `Tender with tID: ${existingTender.tID} updated Successfully`});
+        return res.json({ status: "success", message: `Tender with tID: ${existingTender.tID} updated Successfully` });
     } catch (error) {
         next(error);
     }
@@ -94,7 +97,7 @@ export const DeleteTender = async (req: Request, res: Response, next: NextFuncti
         const existingTender = await Tender.findOne({ tID: parseInt(tID, 10) });
 
         if (!existingTender) {
-            return res.status(404).json({status: "failure", message: 'Tender not found' });
+            return res.status(404).json({ status: "failure", message: 'Tender not found' });
         }
 
         const existingTenderDoc = existingTender.document;
@@ -108,7 +111,7 @@ export const DeleteTender = async (req: Request, res: Response, next: NextFuncti
 
         const deletedTender = await Tender.findByIdAndDelete(existingTender._id);
 
-        return res.json({status:"success", message: `Tender tID: ${deletedTender.tID}: Title: ${deletedTender.title} deleted successfully`, });
+        return res.json({ status: "success", message: `Tender tID: ${deletedTender.tID}: Title: ${deletedTender.title} deleted successfully`, });
     } catch (error) {
         next(error);
     }
@@ -156,7 +159,7 @@ export const GetTenderById = async (req: Request, res: Response, next: NextFunct
             return res.status(404).json({ message: 'Tender not found' });
         }
 
-        const tenderResult =  {
+        const tenderResult = {
             tID: tender.tID,
             title: tender.title,
             state: tender.state,
@@ -268,7 +271,7 @@ export const GlobalTenderSearch = async (req: Request, res: Response, next: Next
                 },
                 { closeDate: { $gte: today } } // Filter by closeDate >= today
             ]
-        }as any);
+        } as any);
 
         const totalPages = Math.ceil(totalTendersCount / limit);
 
@@ -299,33 +302,35 @@ export const DownloadTenderDocument = async (req: AuthenticatedRequest, res: Res
         const tender = await Tender.findOne({ tID: parseInt(tenderId, 10) });
 
         if (!tender) {
-            return res.status(404).json({ message: 'Tender not found' });
+            return res.status(404).json({ status: "failure", message: 'Tender not found' });
         }
 
         const userId = parseInt(req.user.userId, 10);
 
         const dbUser = await User.findOne({ userId: userId });
-        console.log(userId);
-        console.log(dbUser);
 
         if (!dbUser) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ status: "failure", message: 'User not found' });
         }
 
         if (!dbUser.subscribedStatus || new Date(dbUser.subscriptionExpiryDate) < new Date()) {
-            return res.status(403).json({ message: 'Not authorized: Subscription expired or not subscribed' });
+            return res.status(403).json({ status: "failure", message: 'Not authorized: Subscription expired or not subscribed' });
         }
 
         const documentPath = tender.document;
 
         if (!documentPath) {
-            return res.status(404).json({ message: 'Document not found for this tender' });
+            return res.status(404).json({ status: "failure", message: 'Document not found for this tender' });
         }
 
-        const absolutePath = path.resolve(documentPath);
+
+        const decryptTenderDoc = decrypt(documentPath);
+        const absolutePath = path.resolve(decryptTenderDoc);
+
+
 
         if (!fs.existsSync(absolutePath)) {
-            return res.status(404).json({ message: 'Document file not found' });
+            return res.status(404).json({ status: "failure", message: 'Document file not found' });
         }
 
         res.download(absolutePath, (err) => {
@@ -338,4 +343,32 @@ export const DownloadTenderDocument = async (req: AuthenticatedRequest, res: Res
     }
 };
 
+
+export const orderCreation = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const razorpay = new Razorpay({
+            key_id: req.body.keyId,
+            key_secret: req.body.keySecret,
+        });
+
+        const options = {
+            amount: req.body.amount,
+            currency: req.body.currency,
+            receipt: "any unique id for every order",
+            payment_capture: 1
+        };
+        try {
+            const response = await razorpay.orders.create(options)
+            res.json({
+                order_id: response.id,
+                currency: response.currency,
+                amount: response.amount,
+            })
+        } catch (err) {
+            res.status(400).send('Not able to create order. Please try again!');
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 

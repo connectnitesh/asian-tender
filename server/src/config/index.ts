@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import Razorpay from 'razorpay'
 
 dotenv.config();
 
@@ -10,6 +11,14 @@ export const ADMIN_SIGNUP_SECRET = process.env.ADMIN_SIGNUP_SECRET || 'hey£Admi
 
 export const stateData = require('./state.json');
 export  const categoryData = require('./categories.json');
+
+export const razorpayInstance = new Razorpay({
+    key_id: process.env.razorPay_KEY_ID || 'rzp_test_bPd5gNeyvz7OUh', 
+    key_secret: process.env.razorPay_KEY_SECRET || 'dXrpr8ejwmI0QuxOPQdCWwJ4',
+  });
+
+export const razorPay_KEY_ID = 'rzp_test_bPd5gNeyvz7OUh';
+export const razorPay_KEY_SECRET = 'dXrpr8ejwmI0QuxOPQdCWwJ4';
 
 export const subscriptionPlans = {
     all: { duration: [1, 4, 12, 24] },

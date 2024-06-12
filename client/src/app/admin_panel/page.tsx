@@ -13,7 +13,7 @@ import { useAdminAuth } from "@/context/authadminContext";
 
 const SignIn = () => {
   const router = useRouter();
-  const { admin, login } = useAdminAuth();
+  const { admin, login } = useAdminAuth() as { admin: any; login: Function };
 
   const [formData, setFormData] = useState({
     email: "",
