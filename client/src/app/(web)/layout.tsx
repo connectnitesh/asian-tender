@@ -28,6 +28,7 @@ export default function RootLayout({
             <meta name="description" content="Asian Tender" />
           </Head>
           <Navbar />
+          <div className='pd-4 bg-white h-2'></div>
           <main>{children}</main>
           <Footer />
         </body>

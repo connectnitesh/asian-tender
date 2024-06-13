@@ -11,7 +11,8 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, handleComponentChange }: SidebarProps) => {
-  const { logout } = useAdminAuth() as { logout: Function };
+  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(false);
+  const { logout } = useAdminAuth();
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLElement>(null);
 

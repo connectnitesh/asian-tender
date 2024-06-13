@@ -40,19 +40,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var ExpressApp_1 = __importDefault(require("./services/ExpressApp"));
-var Database_1 = __importDefault(require("./services/Database"));
+var expressApp_1 = __importDefault(require("./services/expressApp"));
+var database_1 = __importDefault(require("./services/database"));
 var config_1 = require("./config");
+var cors_1 = __importDefault(require("cors"));
 var StartServer = function () { return __awaiter(void 0, void 0, void 0, function () {
     var app;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 app = (0, express_1.default)();
-                return [4 /*yield*/, (0, Database_1.default)()];
+                app.use((0, cors_1.default)({
+                    origin: config_1.frontendUrl
+                }));
+                return [4 /*yield*/, (0, database_1.default)()];
             case 1:
                 _a.sent();
-                return [4 /*yield*/, (0, ExpressApp_1.default)(app)];
+                return [4 /*yield*/, (0, expressApp_1.default)(app)];
             case 2:
                 _a.sent();
                 app.listen(config_1.PORT, function () {

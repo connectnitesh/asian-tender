@@ -3,28 +3,31 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { orderVerify } from '@/api/api';
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb-left";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import Error from "next/error";
 
 const SuccessPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [reference, setReference] = useState(null);
+  const [reference, setReference] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<null | string>(null);
 
-  const validateReference = (reference) => {
+  const validateReference = (reference: string) => {
     return reference.startsWith('ASNT') && reference.length >= 3;
   };
 
-  const fetchOrderDetails = async (reference) => {
+  const fetchOrderDetails = async (reference: string) => {
     try {
       const response = await orderVerify(reference);
-      if (response.status == 'success') {
+      if (response.status == 'failure') {
         return response.message;
       } else {
-        throw new Error('Order not found');
+        //@ts-ignore
+        throw new Error('Order verification failed');
       }
     } catch (error) {
+      //@ts-ignore
       throw new Error('Failed to fetch order details');
     }
   };
@@ -42,7 +45,7 @@ const SuccessPage = () => {
         setReference(referenceParam);
         const details = await fetchOrderDetails(referenceParam);
         setIsLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         setError(error.message);
         setIsLoading(false);
       }
@@ -71,7 +74,7 @@ const SuccessPage = () => {
 
   return (
     <div className="min-h-screen p-4 bg-gray-100">
-      <Breadcrumb pageName="Success" />
+      <Breadcrumb mainPage="Home" sidePage="Subscribe" mainLink="/" sideLink="/subscribe" position="left" />
       <div className="max-w-2xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold text-green-600">Payment Successful!</h2>
         <p className="mt-4">Thank you for your purchase. Your order has been successfully processed.</p>

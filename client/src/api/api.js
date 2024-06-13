@@ -226,7 +226,7 @@ export const getrazorPayKey = async (amount) => {
 
 export const paymentVerify = async (data) => {
   try {
-    const response = await api.post(`/subscribe/paymentVerification`, {data});
+    const response = await api.post(`/subscribe/paymentVerification`, { data });
     return response.data;
   } catch (error) {
     throw error;
@@ -235,7 +235,7 @@ export const paymentVerify = async (data) => {
 
 export const orderVerify = async (order_ref_no) => {
   try {
-    const response = await api.post(`/subscribe/verifyorder`, {order_ref_no});
+    const response = await api.post(`/subscribe/verifyorder`, { order_ref_no });
     return response.data;
   } catch (error) {
     throw error;

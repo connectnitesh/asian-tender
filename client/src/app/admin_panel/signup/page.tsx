@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import DarkModeSwitcher from "../../../components/Header/DarkModeSwitcher";
@@ -36,7 +36,7 @@ const SignUp = () => {
     fetchAdminProfile();
   }, [admin]);
 
-  const handleInput = (e) => {
+  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAsianAdmin({
       ...asianAdmin,
@@ -44,7 +44,7 @@ const SignUp = () => {
     });
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {

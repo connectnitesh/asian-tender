@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb-left";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { asyncCheckout, getrazorPayKey, paymentVerify } from '@/api/api'
 import Script from 'next/script';
 import { useAuth } from "@/context/authContext";
@@ -10,7 +10,7 @@ const SubscribePage = () => {
 
   const { user } = useAuth();
 
-  const checkoutHandler = async (amount) => {
+  const checkoutHandler = async (amount: number) => {
     try {
 
       if(!user ){
@@ -47,6 +47,7 @@ const SubscribePage = () => {
       }
     };
 
+    //@ts-ignore
     const razorPay = new window.Razorpay(options);
     razorPay.open();
 
@@ -63,7 +64,7 @@ const SubscribePage = () => {
     src="https://checkout.razorpay.com/v1/checkout.js"
    />
     <div className="min-h-max p-4 bg-gray-100">
-      <Breadcrumb pageName="Subscribe" />
+      <Breadcrumb mainPage="Home" sidePage="Subscribe" mainLink="/" sideLink="subscribe" position="left" />
       <div className="grid grid-cols-3 gap-8 mx-auto max-w-4xl mt-8">
         <div className="flex flex-col gap-4 p-6 bg-white rounded-lg shadow-lg">
           <h2 className="text-lg font-semibold text-blue-600 bg-blue-100 p-2 rounded">1 Month Plan</h2>

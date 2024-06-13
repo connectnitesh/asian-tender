@@ -1,5 +1,5 @@
 "use client";
-import "../../css/style.css"
+import "@/css/global.css"
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import { AuthAdminProvider } from '@/context/authadminContext';
@@ -24,9 +24,6 @@ export default function RootLayout({
             <Loader />
           ) : (
             <main>
-                <nav>
-                  {/* Add your navigation items here */}
-                </nav>
                 {children}
             </main>
           )}

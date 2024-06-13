@@ -3,7 +3,8 @@ import { Request, Response, NextFunction } from 'express';
 import Tender from '../models/Tender';
 import getLatestId from '../utility/helper';
 import path from 'path';
-import { categoryData, stateData } from '../config';
+import { categoryData } from '../config/categories';
+import { stateData } from '../config/state';
 import User from '../models/User';
 import { decrypt } from '../utility/crypto'
 import Razorpay from 'razorpay';
