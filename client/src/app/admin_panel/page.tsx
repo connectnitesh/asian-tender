@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
 import Image from "next/image";
@@ -30,14 +30,14 @@ const SignIn = () => {
     fetchAdminProfile();
   }, [admin]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement> ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any ) => {
     e.preventDefault();
     try {
       const { email, password } = formData;
@@ -52,7 +52,7 @@ const SignIn = () => {
       } else {
         alert("Please provide email and password");
       }
-    } catch (error) {
+    } catch (error:any) {
       if (error.response && error.response.data && error.response.data.message) {
         alert(error.response.data.message);
       } else {

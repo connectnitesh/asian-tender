@@ -1,14 +1,16 @@
 import express from 'express';
 import App from './services/expressApp';
 import dbConnection from './services/database';
-import { PORT } from './config';
+import { PORT, frontendUrl } from './config';
 import cors from 'cors';
 
 
 const StartServer = async () => {
 
     const app = express();
-    app.use(cors());
+    app.use(cors({
+        origin: frontendUrl
+    }));
 
     await dbConnection()
 

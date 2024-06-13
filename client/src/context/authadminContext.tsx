@@ -1,13 +1,30 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import cookie from 'js-cookie';
 import { getAsianAdmin } from '@/api/api';
 
-const AuthAdminContext = createContext();
+interface AuthAdminContextType {
+    admin: string | null;
+    login: (authToken: string) => Promise<void>;
+    logout: () => void;
+}
 
-export const AuthAdminProvider = ({ children }) => {
+const defaultAuthAdminContext: AuthAdminContextType = {
+    admin: null,
+    login: async () => { },
+    logout: () => { },
+};
+
+
+const AuthAdminContext = createContext<AuthAdminContextType>(defaultAuthAdminContext);
+
+interface AuthAdminProviderProps {
+    children: ReactNode;
+}
+
+export const AuthAdminProvider = ({ children }: AuthAdminProviderProps) => {
     const [admin, setAdmin] = useState(null);
     const router = useRouter();
 
@@ -29,7 +46,7 @@ export const AuthAdminProvider = ({ children }) => {
         }
     };
 
-    const login = async (authToken) => {
+    const login = async (authToken: string) => {
         cookie.set('asiantoken_adn_', authToken, { expires: 1 });
         await fetchAdminProfile();
         router.push('/admin_panel/dashboard');

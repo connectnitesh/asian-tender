@@ -9,18 +9,18 @@ export const PORT = process.env.PORT || 8000;
 export const JWT_SECRET = process.env.JWT_SECRET || 'myJwtSecret8*m'
 export const ADMIN_SIGNUP_SECRET = process.env.ADMIN_SIGNUP_SECRET || 'hey£Admin@Signup$£OKAY'
 
-export const stateData = require('./state.json');
-export  const categoryData = require('./categories.json');
-
 export const razorpayInstance = new Razorpay({
     key_id: process.env.razorPay_KEY_ID || 'rzp_test_bPd5gNeyvz7OUh', 
     key_secret: process.env.razorPay_KEY_SECRET || 'dXrpr8ejwmI0QuxOPQdCWwJ4',
   });
 
-export const razorPay_KEY_ID = 'rzp_test_bPd5gNeyvz7OUh';
-export const razorPay_KEY_SECRET = 'dXrpr8ejwmI0QuxOPQdCWwJ4';
+export const razorPay_KEY_ID = process.env.razorPay_KEY_ID || 'rzp_test_bPd5gNeyvz7OUh';
+export const razorPay_KEY_SECRET = process.env.razorPay_KEY_SECRET || 'dXrpr8ejwmI0QuxOPQdCWwJ4';
 
 export const subscriptionPlans = {
     all: { duration: [1, 4, 12, 24] },
 };
+
+
+export const frontendUrl = process.env.frontendURL = 'http://localhost:3000'
 

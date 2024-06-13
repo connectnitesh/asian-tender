@@ -1,5 +1,4 @@
 "use client";
-import "@/css/style.css";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 
@@ -17,7 +16,7 @@ export default function RootLayout({
 
   return (
     
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
+        <div className="dark:bg-black dark:text-white">
           {loading ? <Loader /> : children}
         </div>
   );

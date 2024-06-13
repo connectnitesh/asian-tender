@@ -1,55 +1,58 @@
-# Node.js
-node_modules/
-npm-debug.log
-yarn-error.log
-.env
+# Global rules
+.DS_Store
+Thumbs.db
+*.pem
 
-# Logs
-logs/
-*.log
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Dependencies
-node_modules/
-jspm_packages/
+# Local env files
+.env*.local
+.env
 
-# Next.js
-.next/
-out/
+# Client-specific rules
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Production
-build/
-dist/
+/client/node_modules
+/client/.pnp
+/client/.pnp.js
+/client/.yarn/install-state.gz
 
 # Testing
-coverage/
-*.lcov
+/client/coverage
 
-# Miscellaneous
-.DS_Store
-*.pem
-*.p12
-*.crt
-*.key
-
-# Editor directories and files
-.vscode/
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-
-# OS-generated files
-Thumbs.db
-.DS_Store
-
-# Client-specific
+# Next.js
 /client/.next/
-client/node_modules/
+/client/out/
 
-# Server-specific
-/server/node_modules/
-server/build/
+# Production
+/client/build
+
+# Misc
+/client/.DS_Store
+
+# Debug
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+
+# Local env files
+/client/.env*.local
+
+# Vercel
+/client/.vercel
+
+# TypeScript
+/client/*.tsbuildinfo
+/client/next-env.d.ts
+
+# Server-specific rules
+/server/node_modules
+/server/dist
+/server/.env
+
+# ignoring server index.ts copied index.local.ts
+/server/src/config/index.ts
+

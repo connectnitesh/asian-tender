@@ -2,8 +2,8 @@ import { useAuth } from '@/context/authContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-const withAuth = (WrappedComponent: React.ComponentType) => {
-  return (props: any) => {
+const withAuth = <P extends Record<string, unknown>>(Component: React.ComponentType<P>): React.FC<P> =>{
+  const Auth: React.FC<P> = (props) => {
     const { user } = useAuth();
     const router = useRouter();
 
@@ -13,12 +13,11 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
       }
     }, [user, router]);
 
-    if (!user) {
-      return null; // or a loading spinner
-    }
+    return user ? <Component {...props} /> :  null;
 
-    return <WrappedComponent {...props} />;
   };
+
+  return Auth;
 };
 
 export default withAuth;

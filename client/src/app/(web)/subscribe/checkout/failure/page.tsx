@@ -3,29 +3,30 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { orderVerify } from '@/api/api';
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb-left";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
 const FailurePage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [reference, setReference] = useState(null);
+  const [reference, setReference] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<null | string>(null);
 
-  const validateReference = (reference) => {
+  const validateReference = (reference: string) => {
     return reference.startsWith('ASNT') && reference.length >= 3;
   };
 
-  const fetchOrderDetails = async (reference) => {
+  const fetchOrderDetails = async (reference: string) => {
     try {
       const response = await orderVerify(reference);
-      console.log(response)
       if (response.status == 'failure') {
         return response.message;
       } else {
+        //@ts-ignore
         throw new Error('Order verification failed');
       }
     } catch (error) {
+      //@ts-ignore
       throw new Error('Failed to fetch order details');
     }
   };
@@ -43,7 +44,7 @@ const FailurePage = () => {
         setReference(referenceParam);
         const details = await fetchOrderDetails(referenceParam);
         setIsLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         setError(error.message);
         setIsLoading(false);
       }
@@ -72,7 +73,7 @@ const FailurePage = () => {
 
   return (
     <div className="min-h-screen p-4 bg-gray-100">
-      <Breadcrumb pageName="Failure" />
+      <Breadcrumb mainPage="Home" sidePage="Subscribe" mainLink="/" sideLink="/subscribe" position="left" />
       <div className="max-w-2xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold text-red-600">Payment Failed</h2>
         <p className="mt-4">We apologize, but there was an issue processing your order.</p>
