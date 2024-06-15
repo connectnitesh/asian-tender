@@ -20,13 +20,13 @@ const SignIn = () => {
     password: ""
   });
 
-  const fetchAdminProfile = async () => {
-    if (admin) {
-      router.push('/admin_panel/dashboard');
-    }
-  };
-
+  
   useEffect(() => {
+    const fetchAdminProfile = async () => {
+      if (admin) {
+        router.push('/admin_panel/dashboard');
+      }
+    };
     fetchAdminProfile();
   }, [admin]);
 

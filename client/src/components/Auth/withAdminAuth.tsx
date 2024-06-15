@@ -1,10 +1,10 @@
-import {  useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useAdminAuth } from '@/context/authadminContext';
+import { useEffect, ComponentType, FC } from 'react';
 
-const withAdminAuth = <P extends Record<string, unknown>>(Component: React.ComponentType<P>): React.FC<P> =>{
-  const adminAuth: React.FC<P> = (props) => {
-    const { admin } = useAdminAuth() as { admin: any };
+const withAdminAuth = <P extends Record<string, unknown>>(Component: ComponentType<P>): FC<P> => {
+  const AdminAuth: FC<P> = (props) => {
+    const { admin } = useAdminAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -13,10 +13,10 @@ const withAdminAuth = <P extends Record<string, unknown>>(Component: React.Compo
       }
     }, [admin, router]);
 
-    return admin ? <Component {...props} /> :  null;
+    return admin ? <Component {...props as P} /> : null;
   };
 
-  return adminAuth
+  return AdminAuth;
 };
 
 export default withAdminAuth;

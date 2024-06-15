@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import withAdminAuth from "@/components/Auth/withAdminAuth";
 import { asyncDeleteTender } from '@/api/api';
@@ -10,7 +10,7 @@ const DeleteTender = () => {
     const authorization = cookie.get('asiantoken_adn_');
 
 
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setTenderID(value);
     };
@@ -32,7 +32,7 @@ const DeleteTender = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setShowConfirmation(true);
     };
@@ -43,7 +43,7 @@ const DeleteTender = () => {
 
     return (
         <>
-            <Breadcrumb mainPage="Delete Tender" />
+            <Breadcrumb sideLink='' sidePage='Delete Tender' />
             <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-bold text-white">Delete Tender</h2>
             </div>

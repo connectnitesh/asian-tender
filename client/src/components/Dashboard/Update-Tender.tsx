@@ -1,12 +1,21 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, ChangeEvent, FormEvent } from 'react';
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import withAdminAuth from "@/components/Auth/withAdminAuth";
 import { asyncUpdateTender } from '@/api/api';
 import cookie from 'js-cookie'
 
+interface TenderData {
+    tID: string;
+    title: string;
+    state: string;
+    category: string;
+    value: string;
+    closeDate: string;
+    tenderDoc?: File | null;
+}
 
 const UpdateTender = () => {
-    const [tenderData, setTenderData] = useState({
+    const [tenderData, setTenderData] =  useState<TenderData>({
         tID: '',
         title: '',
         state: '',
@@ -18,7 +27,7 @@ const UpdateTender = () => {
 
     const authorization = cookie.get('asiantoken_adn_');
 
-    const fileInputRef = useRef(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
 
     const stateOptions = {
@@ -93,16 +102,19 @@ const UpdateTender = () => {
         "TD": "Tubewell Drilling"
     };
 
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setTenderData((prevData) => ({ ...prevData, [name]: value }));
     };
 
-    const handleFileChange = (e) => {
-        setTenderData({ ...tenderData, tenderDoc: e.target.files[0] });
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setTenderData({ ...tenderData, tenderDoc: file });
+        }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const formData = new FormData();
@@ -139,7 +151,7 @@ const UpdateTender = () => {
             });
 
             if (fileInputRef.current) {
-                fileInputRef.current.value = null;
+                fileInputRef.current.value = '';
             }
 
         }
@@ -148,7 +160,7 @@ const UpdateTender = () => {
 
     return (
         <>
-            <Breadcrumb sidePage="Update Tender" />
+            <Breadcrumb sidePage="Update Tender" sideLink='' />
             <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-bold text-white">Update Tender</h2>
             </div>

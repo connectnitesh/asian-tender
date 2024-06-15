@@ -92,6 +92,8 @@ export const CustomerSignup = async (req: Request, res: Response, next: NextFunc
 
     res.status(201).json({ status:"success", message: 'Customer registered successfully' });
   } catch (error) {
+    console.log(error);
+    res.status(500).json({ status:"failure", message: 'Internal Server Error'});
     next(error);
   }
 };

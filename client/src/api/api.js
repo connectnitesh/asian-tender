@@ -205,10 +205,10 @@ export const asyncDeleteTender = async (tID, authorization) => {
   }
 };
 
-export const asyncCheckout = async (amount) => {
+export const asyncCheckout = async (email,amount,pack_duration) => {
   try {
     const response = await api.post(`/subscribe/checkout`,
-      { amount });
+      {email, amount, pack_duration });
     return response.data;
   } catch (error) {
     throw error;

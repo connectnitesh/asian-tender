@@ -21,18 +21,18 @@ const SignUp = () => {
     secret: ""
   });
 
-
-  const fetchAdminProfile = async () => {
-    try {
-      if (admin)
-        router.push('/admin_panel/dashboard');
-    } catch (error) {
-      console.error("Failed to fetch admin profile:", error);
-    }
-  };
-
-
+  
+  
   useEffect(() => {
+    
+      const fetchAdminProfile = async () => {
+        try {
+          if (admin)
+            router.push('/admin_panel/dashboard');
+        } catch (error) {
+          console.error("Failed to fetch admin profile:", error);
+        }
+      };
     fetchAdminProfile();
   }, [admin]);
 

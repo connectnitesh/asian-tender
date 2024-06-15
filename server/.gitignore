@@ -1,2 +1,24 @@
-# .gitignore
-# configured in root
+
+# Server-specific rules
+node_modules
+dist
+.env
+
+# ignoring server index.ts copied index.local.ts
+# src/config/index.ts
+
+
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+.env
+
+# Global rules
+.DS_Store
+Thumbs.db
+*.pem

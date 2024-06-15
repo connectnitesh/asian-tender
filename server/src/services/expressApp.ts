@@ -1,26 +1,28 @@
-import express , { Application } from 'express';
+import express, { Application } from 'express';
 
 import { authRoute, subscriptionRoute } from '../routes'
 import { tenderRoute } from '../routes'
- 
 
-export default async(app: Application) => {
+
+export default async (app: Application) => {
 
     app.use(express.json());
-    app.use(express.urlencoded({ extended: true}))
+    app.use(express.urlencoded({ extended: true }))
 
-    
+
     app.use('/auth', authRoute);
     app.use('/tender', tenderRoute);
     app.use('/subscribe', subscriptionRoute);
 
     app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
         console.error(err.stack);
-        res.status(500).send({ message: err.message });
+        res.status(500).json({
+            status: "failure",
+            message: 'Internal Server Error'
+        });
     });
 
     return app;
 
 }
 
-  

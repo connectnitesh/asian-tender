@@ -9,7 +9,8 @@ import { useAuth } from "@/context/authContext";
 
 const TenderOne = () => {
   const pathname = usePathname();
-  const tID = pathname.match(/\d+/)[0];
+  const match = pathname.match(/\d+/);
+  const tID = match ? match[0] : null;
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);

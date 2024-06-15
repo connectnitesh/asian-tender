@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IUser extends Document {
   name: string;
-  contact: string;
+  contact: number;
   email: string;
   company: string;
   address?: string;
@@ -30,7 +30,7 @@ const UserSchema: Schema = new Schema({
     unique: true,
   },
   contact: {
-    type: String,
+    type: Number,
     required: true,
     unique: true,
   },

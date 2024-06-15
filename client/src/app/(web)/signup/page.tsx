@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
@@ -19,21 +19,21 @@ const Signup = () => {
     password: ""
   });
 
-  const fetchUserProfile = async () => {
-    try {
-      if (user) {
-        router.push('/profile');
-      }
-    } catch (error) {
-      console.error("Failed to fetch user profile:", error);
-    }
-  };
-
+  
   useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        if (user) {
+          router.push('/profile');
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
     fetchUserProfile();
   }, [user]);
 
-  const handleInput = (e) => {
+  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCustomer({
       ...customer,
@@ -41,7 +41,7 @@ const Signup = () => {
     });
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
@@ -52,7 +52,7 @@ const Signup = () => {
       } else {
         alert(response.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error.response && error.response.data && error.response.data.message) {
         alert(error.response.data.message);
       } else {

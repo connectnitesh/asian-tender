@@ -1,9 +1,9 @@
 import { useAuth } from '@/context/authContext';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, ComponentType, FC } from 'react';
 
-const withAuth = <P extends Record<string, unknown>>(Component: React.ComponentType<P>): React.FC<P> =>{
-  const Auth: React.FC<P> = (props) => {
+const withAuth = <P extends object>(Component: ComponentType<P>): FC<P> => {
+  const Auth: FC<P> = (props) => {
     const { user } = useAuth();
     const router = useRouter();
 
@@ -13,8 +13,7 @@ const withAuth = <P extends Record<string, unknown>>(Component: React.ComponentT
       }
     }, [user, router]);
 
-    return user ? <Component {...props} /> :  null;
-
+    return user ? <Component {...props} /> : null;
   };
 
   return Auth;

@@ -10,7 +10,7 @@ const SubscribePage = () => {
 
   const { user } = useAuth();
 
-  const checkoutHandler = async (amount: number) => {
+  const checkoutHandler = async (amount: number, pack_duration: number) => {
     try {
 
       if(!user ){
@@ -22,12 +22,12 @@ const SubscribePage = () => {
 
       const rzp_key = await getrazorPayKey();
       // console.log(rzp_key.key)
-      const resp = await asyncCheckout(amount);
+      const resp = await asyncCheckout(user.email, amount, pack_duration);
 
 
     var options = {
       key: rzp_key.key,
-      amount: Number(amount * 100),
+      amount: Number(amount),
       currency: "INR",
       name: "Asian Tender",
       description: "Asian Tender Subscription",
@@ -75,11 +75,11 @@ const SubscribePage = () => {
             <p>Daily email tender notification</p>
             <p>Download tender document</p>
             <p>Web access</p>
-            <button onClick={() => checkoutHandler(3500)}>Subscribe Now</button>
+            <button onClick={() => checkoutHandler(3500,90)}>Subscribe Now</button>
           </div>
         </div>
         <div className="flex flex-col gap-4 p-6 bg-white rounded-lg shadow-lg">
-          <h2 className="text-lg font-semibold text-blue-600 bg-blue-100 p-2 rounded">4 Month Plan </h2>
+          <h2 className="text-lg font-semibold text-blue-600 bg-blue-100 p-2 rounded">5 Month Plan </h2>
           <div className="flex flex-col gap-2">
             <p>Price: Rs. 5,500/- (Five thousand, five hundred only)</p>
             <p>Includes: All Products</p>
@@ -87,7 +87,7 @@ const SubscribePage = () => {
             <p>Daily email tender notification</p>
             <p>Download tender document</p>
             <p>Web access</p>
-            <button onClick={() => checkoutHandler(5500)}>Subscribe Now</button>
+            <button onClick={() => checkoutHandler(5500,150)}>Subscribe Now</button>
           </div>
         </div>
         <div className="flex flex-col gap-4 p-6 bg-white rounded-lg shadow-lg">
@@ -99,7 +99,7 @@ const SubscribePage = () => {
             <p>Daily email tender notification</p>
             <p>Download tender document</p>
             <p>Web access</p>
-            <button onClick={() => checkoutHandler(12500)}>Subscribe Now</button>
+            <button onClick={() => checkoutHandler(12500,366)}>Subscribe Now</button>
 
           </div>
         </div>

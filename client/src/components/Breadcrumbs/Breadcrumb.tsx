@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 interface BreadcrumbProps {
-  mainPage: string;
+  mainPage?: string;
   sidePage: string;
-  mainLink: string;
+  mainLink?: string;
   sideLink: string;
   position?: "left" | "right";
 }
