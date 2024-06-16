@@ -1,4 +1,8 @@
-import { useRouter } from 'next/router';
+"use client"
+
+
+
+import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/context/authadminContext';
 import { useEffect, ComponentType, FC } from 'react';
 

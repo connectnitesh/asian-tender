@@ -8,7 +8,6 @@ import {
     GlobalTenderSearch,
     DownloadTenderDocument,
     FilterTenders,
-    orderCreation
 } from '../controllers';
 import {  verifyToken, verifyTokenUser } from '../services/authService';
 import  uploadFile  from '../middleware/fileUploadMiddleware'
@@ -26,7 +25,5 @@ router.post('/create-tender',uploadFile, CreateTender);
 router.post('/update-tender/:tID',uploadFile, UpdateTender);
 router.post('/delete-tender/:tID', DeleteTender);
 
-
-router.post('/order', orderCreation);
 
 export { router as tenderRoute }

@@ -318,6 +318,7 @@ export const DownloadTenderDocument = async (req: AuthenticatedRequest, res: Res
             return res.status(403).json({ status: "failure", message: 'Not authorized: Subscription expired or not subscribed' });
         }
 
+        console.log(tender);
         const documentPath = tender.document;
 
         if (!documentPath) {
@@ -326,6 +327,7 @@ export const DownloadTenderDocument = async (req: AuthenticatedRequest, res: Res
 
 
         const decryptTenderDoc = decrypt(documentPath);
+        console.log(decryptTenderDoc)
         const absolutePath = path.resolve(decryptTenderDoc);
 
 
@@ -344,32 +346,4 @@ export const DownloadTenderDocument = async (req: AuthenticatedRequest, res: Res
     }
 };
 
-
-export const orderCreation = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const razorpay = new Razorpay({
-            key_id: req.body.keyId,
-            key_secret: req.body.keySecret,
-        });
-
-        const options = {
-            amount: req.body.amount,
-            currency: req.body.currency,
-            receipt: "any unique id for every order",
-            payment_capture: 1
-        };
-        try {
-            const response = await razorpay.orders.create(options)
-            res.json({
-                order_id: response.id,
-                currency: response.currency,
-                amount: response.amount,
-            })
-        } catch (err) {
-            res.status(400).send('Not able to create order. Please try again!');
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
 

@@ -51,6 +51,7 @@ const verifyTokenUser = (req: AuthenticatedRequest, res: Response, next: NextFun
     }
 
     req.user = decoded;
+    console.log(decoded);
 
     next();
   } catch (error) {

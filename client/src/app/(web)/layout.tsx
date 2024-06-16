@@ -23,10 +23,6 @@ export default function RootLayout({
     <AuthProvider>
       <html lang="en">
         <body className={inter.className}>
-          <Head>
-            <title>Asian Tender</title>
-            <meta name="description" content="Asian Tender" />
-          </Head>
           <Navbar />
           <div className='pd-4 bg-white h-2'></div>
           <main>{children}</main>

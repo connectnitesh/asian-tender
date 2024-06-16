@@ -44,6 +44,7 @@ const uploadFile = (req: Request, res: Response, next: NextFunction) => {
     }
     const relativeFilePath = path.relative(process.cwd(), req.file.path);
     req.filePath = encrypt(relativeFilePath);
+    console.log('-----------------> req.filePath', req.filePath)
     next();
   });
 };
